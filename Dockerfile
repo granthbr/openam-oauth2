@@ -40,16 +40,15 @@ ADD configs/oauth2-policy.xml /root/openam-tools/admin/
 # copy the configurator and run start scripts
 ADD tools/SSOConfiguratorTools* /root/openam-tools/config/
 ADD tools/SSOAdminTools-13.0.0.zip /root/openam-tools/admin/
-WORKDIR /root/openam-tools
-RUN unzip -d config/ config/SSOConfiguratorTools-13.0.0.zip  
-RUN rm /root/openam-tools/config/SSOConfiguratorTools-13.0.0.zip 
-RUN unzip -d admin/ admin/SSOAdminTools-13.0.0.zip
-RUN rm /root/openam-tools/admin/SSOAdminTools-13.0.0.zip
-RUN sed -i "s/KEYSTORE_PASSWORD_PLACEHOLDER/${OPENAM_KEYSTORE_PASSWORD}/g" ${CATALINA_HOME}/conf/server.xml
-
 # start Tomcat for the configurator
 ADD scripts/runConfig.sh /root/openam-tools/
-RUN /root/openam-tools/runConfig.sh
+WORKDIR /root/openam-tools
+RUN unzip -d config/ config/SSOConfiguratorTools-13.0.0.zip && \
+     rm /root/openam-tools/config/SSOConfiguratorTools-13.0.0.zip 
+     unzip -d admin/ admin/SSOAdminTools-13.0.0.zip && \
+     rm /root/openam-tools/admin/SSOAdminTools-13.0.0.zip && \ 
+     sed -i "s/KEYSTORE_PASSWORD_PLACEHOLDER/${OPENAM_KEYSTORE_PASSWORD}/g" ${CATALINA_HOME}/conf/server.xml && \
+     /root/openam-tools/runConfig.sh
 
 # add SSO admin tools and setup
 # ADD tools/SSOAdminTools-13.0.0.zip /root/openam-admin/
